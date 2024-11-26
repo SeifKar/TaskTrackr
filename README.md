@@ -157,6 +157,43 @@ git push heroku main
    - Dependency updates
    - Performance optimization
 
+## Application Screenshots
+
+### User Authentication
+#### Registration
+![Registration Page](client/src/Screenshots/registration1.0%20-%20project.jpg)
+*User registration interface with form validation*
+
+#### Login
+![Login Page](client/src/Screenshots/log%20in%20-%20project.jpg)
+*Login interface for existing users*
+
+![Login Success](client/src/Screenshots/log%20in%202.0-%20project.jpg)
+*Successful login with user authentication*
+
+### Task Management
+#### Task Creation and Viewing
+![Task Dashboard](client/src/Screenshots/logged%20in%20with%20task%20-%20project.jpg)
+*Main dashboard showing tasks after successful login*
+
+#### Task Scheduling
+![Task Scheduling](client/src/Screenshots/scheduling%20-%20project.jpg)
+*Interface for scheduling new tasks*
+
+![Task Scheduling Details](client/src/Screenshots/scheduling%202.0%20project.jpg)
+*Detailed task scheduling options*
+
+#### Task Status
+![Scheduled Tasks](client/src/Screenshots/scheduled%20-%20project.jpg)
+*View of scheduled tasks in the system*
+
+#### Task Deletion
+![Task Deletion](client/src/Screenshots/deleting%20-%20project.jpg)
+*Task deletion interface*
+
+![Deleted Tasks](client/src/Screenshots/deleted%20-%20project.jpg)
+*Confirmation of deleted tasks*
+
 ## Contributing
 
 1. Fork the repository
