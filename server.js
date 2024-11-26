@@ -92,12 +92,13 @@ app.use(`${API_VERSION}/users`, userRoutes);
 app.use(`${API_VERSION}/notifications`, notificationRoutes);
 
 // Health check endpoint
-app.get('/health', (req, res) => {
+app.get(`${API_VERSION}/health`, (req, res) => {
     res.json({
         status: 'ok',
         timestamp: new Date(),
         uptime: process.uptime(),
-        memory: process.memoryUsage()
+        memory: process.memoryUsage(),
+        environment: process.env.NODE_ENV
     });
 });
 
