@@ -40,22 +40,58 @@ exports.registerUser = async (req, res) => {
 exports.loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
+        console.log('Login request received:', { email, password: '***' });
         
+        if (!email || !password) {
+            console.log('Missing credentials');
+            return res.status(400).json({ 
+                message: 'Please provide both email and password' 
+            });
+        }
+
+        console.log('Looking up user with email:', email);
         const user = await User.findOne({ email }).select('+password');
-        if (!user || !(await user.matchPassword(password))) {
-            return res.status(401).json({ message: 'Invalid email or password' });
+        
+        if (!user) {
+            console.log('No user found with email:', email);
+            return res.status(401).json({ 
+                message: 'Invalid email or password' 
+            });
+        }
+
+        console.log('User found:', {
+            id: user._id,
+            email: user.email,
+            hasPassword: !!user.password
+        });
+
+        const isPasswordValid = await user.matchPassword(password);
+        console.log('Password validation result:', isPasswordValid);
+
+        if (!isPasswordValid) {
+            console.log('Invalid password for user:', email);
+            return res.status(401).json({ 
+                message: 'Invalid email or password' 
+            });
         }
 
         const token = generateToken(user._id);
-        res.json({
+        console.log('Login successful for user:', email);
+        
+        const response = {
             _id: user._id,
             name: user.name,
             email: user.email,
             token
-        });
+        };
+        console.log('Sending response:', { ...response, token: '***' });
+        
+        res.json(response);
     } catch (error) {
         console.error('Login error:', error);
-        res.status(400).json({ message: error.message });
+        res.status(500).json({ 
+            message: 'Error logging in. Please try again.' 
+        });
     }
 };
 

@@ -63,12 +63,29 @@ if (process.env.NODE_ENV !== 'production') {
 // MongoDB Connection with retry logic
 const connectDB = async (retries = 5) => {
     try {
-        await mongoose.connect(process.env.MONGODB_URI, {
+        console.log('MongoDB URI:', process.env.MONGODB_URI);
+        console.log('Attempting to connect to MongoDB...');
+        
+        const conn = await mongoose.connect(process.env.MONGODB_URI, {
             useNewUrlParser: true,
-            useUnifiedTopology: true
+            useUnifiedTopology: true,
         });
-        console.log('MongoDB connected successfully');
+
+        console.log(`MongoDB Connected: ${conn.connection.host}`);
+        
+        // Create indexes for better query performance
+        const User = require('./models/User');
+        await User.createIndexes();
+        console.log('Database indexes created successfully');
+        
     } catch (error) {
+        console.error('MongoDB connection error details:', {
+            name: error.name,
+            message: error.message,
+            code: error.code,
+            codeName: error.codeName
+        });
+        
         if (retries > 0) {
             console.log(`MongoDB connection failed. Retrying... (${retries} attempts left)`);
             setTimeout(() => connectDB(retries - 1), 5000);
