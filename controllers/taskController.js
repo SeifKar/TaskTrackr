@@ -1,4 +1,19 @@
 const Task = require('../models/Task');
+const Notification = require('../models/Notification');
+
+// Helper function to create notification
+const createNotification = async (userId, title, message) => {
+    try {
+        await Notification.create({
+            user: userId,
+            title,
+            message,
+            isRead: false
+        });
+    } catch (error) {
+        console.error('Error creating notification:', error);
+    }
+};
 
 // @desc    Create a new task
 // @route   POST /api/tasks
@@ -14,6 +29,13 @@ exports.createTask = async (req, res) => {
             priority,
             user: req.user._id
         });
+
+        // Create notification for new task
+        await createNotification(
+            req.user._id,
+            'New Task Created',
+            `Task "${title}" has been created with deadline: ${new Date(deadline).toLocaleDateString()}`
+        );
 
         res.status(201).json({
             status: 'success',
@@ -158,6 +180,13 @@ exports.deleteTask = async (req, res) => {
             });
         }
 
+        // Create notification for task deletion
+        await createNotification(
+            req.user._id,
+            'Task Deleted',
+            `Task "${task.title}" has been deleted`
+        );
+
         res.json({
             status: 'success',
             message: 'Task deleted successfully'
@@ -175,14 +204,9 @@ exports.deleteTask = async (req, res) => {
 // @access  Private
 exports.updateTaskStatus = async (req, res) => {
     try {
-        const { status } = req.body;
-
         const task = await Task.findOneAndUpdate(
-            {
-                _id: req.params.id,
-                user: req.user._id
-            },
-            { status },
+            { _id: req.params.id, user: req.user._id },
+            { status: req.body.status },
             { new: true, runValidators: true }
         );
 
@@ -193,7 +217,14 @@ exports.updateTaskStatus = async (req, res) => {
             });
         }
 
-        res.json({
+        // Create notification for status update
+        await createNotification(
+            req.user._id,
+            'Task Status Updated',
+            `Task "${task.title}" status changed to ${req.body.status}`
+        );
+
+        res.status(200).json({
             status: 'success',
             data: task
         });

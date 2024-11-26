@@ -21,6 +21,25 @@ const userSchema = new mongoose.Schema({
         minlength: 8,
         select: false
     },
+    notificationPreferences: {
+        email: {
+            enabled: { type: Boolean, default: true },
+            deadlineReminder: { type: Boolean, default: true },
+            statusChanges: { type: Boolean, default: true },
+            assignments: { type: Boolean, default: true }
+        },
+        pushNotifications: {
+            enabled: { type: Boolean, default: true },
+            deadlineReminder: { type: Boolean, default: true },
+            statusChanges: { type: Boolean, default: true },
+            assignments: { type: Boolean, default: true }
+        },
+        reminderTiming: {
+            type: String,
+            enum: ['1hour', '3hours', '1day', '2days', '1week'],
+            default: '1day'
+        }
+    },
     createdAt: {
         type: Date,
         default: Date.now
@@ -30,13 +49,15 @@ const userSchema = new mongoose.Schema({
 // Hash password before saving
 userSchema.pre('save', async function(next) {
     if (!this.isModified('password')) return next();
-    this.password = await bcrypt.hash(this.password, 12);
+    
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
     next();
 });
 
-// Method to check if password is correct
-userSchema.methods.correctPassword = async function(candidatePassword, userPassword) {
-    return await bcrypt.compare(candidatePassword, userPassword);
+// Method to check if password matches
+userSchema.methods.matchPassword = async function(enteredPassword) {
+    return await bcrypt.compare(enteredPassword, this.password);
 };
 
 const User = mongoose.model('User', userSchema);
