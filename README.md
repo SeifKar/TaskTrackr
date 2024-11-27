@@ -157,6 +157,17 @@ git push heroku main
    - Dependency updates
    - Performance optimization
 
+## Demo Video
+
+Watch our TaskTrackr demo video to see all features in action:
+
+### YouTube Version (Recommended)
+[![TaskTrackr Demo](client/src/Screenshots/logged%20in%20with%20task%20-%20project.jpg)](https://youtu.be/Us0tktSuRFE)
+*Click the image above to watch the demo on YouTube*
+
+### Local Version
+You can also [download the demo video](client/src/Screenshots/video%20-%20project.mp4) directly from our repository.
+
 ## Application Screenshots
 
 ### User Authentication
